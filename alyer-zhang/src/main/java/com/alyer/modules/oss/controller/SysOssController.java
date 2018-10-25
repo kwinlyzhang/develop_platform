@@ -15,6 +15,7 @@ import com.alyer.modules.oss.cloud.OSSFactory;
 import com.alyer.modules.oss.entity.SysOssEntity;
 import com.alyer.modules.oss.service.SysOssService;
 import com.alyer.modules.sys.service.SysConfigService;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -71,9 +72,10 @@ public class SysOssController {
 	@PostMapping("/saveConfig")
 	@RequiresPermissions("sys:oss:all")
 	public R saveConfig(@RequestBody CloudStorageConfig config){
-		//校验类型
-		ValidatorUtils.validateEntity(config);
-
+		if (config.getType() != 0) {
+			//校验类型
+			ValidatorUtils.validateEntity(config);
+		}
 		if(config.getType() == Constant.CloudService.QINIU.getValue()){
 			//校验七牛数据
 			ValidatorUtils.validateEntity(config, QiniuGroup.class);
