@@ -1,0 +1,8 @@
+version: '2'
+services:
+  alyer-zhang:
+    image: alyer/zhang
+    ports:
+      - "8080:8080"
+    environment:
+      - spring.profiles.active=dev

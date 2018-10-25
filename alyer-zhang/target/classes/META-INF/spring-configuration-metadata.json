@@ -1,0 +1,40 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.alyer.modules.app.utils.JwtUtils",
+      "name": "alyer.jwt",
+      "type": "com.alyer.modules.app.utils.JwtUtils"
+    },
+    {
+      "sourceType": "com.alyer.datasources.DynamicDataSourceConfig",
+      "name": "spring.datasource.druid.first",
+      "sourceMethod": "firstDataSource()",
+      "type": "javax.sql.DataSource"
+    },
+    {
+      "sourceType": "com.alyer.datasources.DynamicDataSourceConfig",
+      "name": "spring.datasource.druid.second",
+      "sourceMethod": "secondDataSource()",
+      "type": "javax.sql.DataSource"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.alyer.modules.app.utils.JwtUtils",
+      "defaultValue": 0,
+      "name": "alyer.jwt.expire",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.alyer.modules.app.utils.JwtUtils",
+      "name": "alyer.jwt.header",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.alyer.modules.app.utils.JwtUtils",
+      "name": "alyer.jwt.secret",
+      "type": "java.lang.String"
+    }
+  ]
+}
