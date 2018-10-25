@@ -115,6 +115,20 @@ export default {
       this.dataListSelections = val
     },
     generatorCode () {
+      let tables = ','
+      this.dataListSelections.forEach(item => {
+        tables += item.tableName
+      })
+      tables = tables.substring(1)
+      this.$http({
+        url: this.$http.adornUrl('/sys/generator/code'),
+        method: 'get',
+        params: this.$http.adornParams({
+          tables: tables
+        })
+      }).then(({ data }) => {
+        console.log(data)
+      })
     }
   }
 }
