@@ -143,7 +143,7 @@ public class RBTree {
         }
     }
 
-    // 如果要插入的节点是红色，其父节点是黑色，则不用调整
+    // 如果父节点是黑色，则不用调整
     private void insert2(RBNode node) {
         if (node.parent.color != BLACK) {
             insert3(node);
@@ -154,12 +154,9 @@ public class RBTree {
     private void insert3(RBNode node) {
         RBNode uncle = uncle(node);
         RBNode grandParent = grandParent(node);
-        if (colorOf(uncle) == BLACK) {
+        if (colorOf(uncle) == BLACK) {// 叔叔节点未黑色
             insert4(node);
-            if (Objects.isNull(node.parent)) {
-                root = node;
-            }
-        } else {
+        } else {// 叔叔节点为红色
             node.parent.color = BLACK;
             uncle.color = BLACK;
             grandParent.color = RED;
@@ -172,23 +169,14 @@ public class RBTree {
         RBNode grandParent = grandParent(node);
         if (node == node.parent.right && node.parent == grandParent.left) {
             rotateLeft(node);
-            node = node.left;
+            rotateRight(node);
+        } else if (node == node.parent.left && node.parent == grandParent.left) {
+            rotateRight(node);
+        } else if (node == node.parent.right && node.parent == grandParent.right) {
+            rotateLeft(node);
         } else if (node == node.parent.left && node.parent == grandParent.right) {
             rotateRight(node);
-            node = node.right;
-        }
-        insert5(node);
-    }
-
-    //
-    private void insert5(RBNode node) {
-        RBNode grandParent = grandParent(node);
-        node.parent.color = BLACK;
-        grandParent.color = RED;
-        if (node == node.parent.left && node.parent == grandParent.left) {
-            rotateRight(node.parent);
-        } else {
-            rotateLeft(node.parent);
+            rotateLeft(node);
         }
     }
 
@@ -196,9 +184,9 @@ public class RBTree {
     public boolean insert(int newKey) {
         RBNode insNode = new RBNode(newKey, RED, null, null);
         RBNode node;
-        if (root == null)
+        if (root == null) {
             root = insNode;
-        else {
+        } else {
             node = root;
             while (true) {
                 if (newKey == node.key) {
