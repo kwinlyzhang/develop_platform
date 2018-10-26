@@ -97,7 +97,7 @@ public class RBTree {
         // 自己的原左节点
         RBNode left = node.left;
         // 自己的祖父节点
-        RBNode grandParent = node.parent.parent;
+        RBNode grandParent = grandParent(node);
         // 把父节点作为自己的现左节点
         node.left = node.parent;
         node.left.parent = node;
@@ -121,7 +121,7 @@ public class RBTree {
         // 自己的原右节点
         RBNode right = node.right;
         // 自己的祖父节点
-        RBNode grandParent = node.parent.parent;
+        RBNode grandParent = grandParent(node);
         // 把父节点作为自己的现右节点
         node.right = node.parent;
         node.right.parent = node;
