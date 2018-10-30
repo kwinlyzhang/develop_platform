@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.alyer.modules.consumption_detail.dao.ConsumptionDetailDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.alyer.modules.consumption_detail.entity.ConsumptionDetailEntity" id="consumptionDetailMap">
+        <result property="id" column="id"/>
+        <result property="consumeDate" column="consume_date"/>
+        <result property="type" column="type"/>
+        <result property="name" column="name"/>
+        <result property="remark" column="remark"/>
+        <result property="amount" column="amount"/>
+        <result property="number" column="number"/>
+        <result property="total" column="total"/>
+        <result property="createUserId" column="create_user_id"/>
+        <result property="createDate" column="create_date"/>
+        <result property="updatedDate" column="updated_date"/>
+    </resultMap>
+
+    <select id="queryList" resultMap="consumptionDetailMap">
+        SELECT t.* FROM tb_consumption_detail t
+        WHERE 1 = 1
+        <if test="params.createUserId != null and params.createUserId != ''">
+            AND t.create_user_id = #{params.createUserId}
+        </if>
+    </select>
+</mapper>

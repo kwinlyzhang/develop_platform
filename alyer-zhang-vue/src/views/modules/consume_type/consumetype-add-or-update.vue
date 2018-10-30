@@ -4,17 +4,14 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-    <el-form-item label="商品名" prop="name">
-      <el-input v-model="dataForm.name" placeholder="商品名"></el-input>
+    <el-form-item label="类型" prop="type">
+      <el-input v-model="dataForm.type" placeholder="类型"></el-input>
     </el-form-item>
-    <el-form-item label="介绍" prop="intro">
-      <el-input v-model="dataForm.intro" placeholder="介绍"></el-input>
+    <el-form-item label="类型名称" prop="name">
+      <el-input v-model="dataForm.name" placeholder="类型名称"></el-input>
     </el-form-item>
-    <el-form-item label="价格" prop="price">
-      <el-input v-model="dataForm.price" placeholder="价格"></el-input>
-    </el-form-item>
-    <el-form-item label="数量" prop="num">
-      <el-input v-model="dataForm.num" placeholder="数量"></el-input>
+    <el-form-item label="备注" prop="remark">
+      <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
     </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -30,45 +27,40 @@
       return {
         visible: false,
         dataForm: {
-          goodsId: 0,
+          id: 0,
+          type: '',
           name: '',
-          intro: '',
-          price: '',
-          num: ''
+          remark: ''
         },
         dataRule: {
+          type: [
+            { required: true, message: '类型不能为空', trigger: 'blur' }
+          ],
           name: [
-            { required: true, message: '商品名不能为空', trigger: 'blur' }
+            { required: true, message: '类型名称不能为空', trigger: 'blur' }
           ],
-          intro: [
-            { required: true, message: '介绍不能为空', trigger: 'blur' }
-          ],
-          price: [
-            { required: true, message: '价格不能为空', trigger: 'blur' }
-          ],
-          num: [
-            { required: true, message: '数量不能为空', trigger: 'blur' }
+          remark: [
+            { required: true, message: '备注不能为空', trigger: 'blur' }
           ]
         }
       }
     },
     methods: {
       init (id) {
-        this.dataForm.goodsId = id || 0
+        this.dataForm.id = id || 0
         this.visible = true
         this.$nextTick(() => {
           this.$refs['dataForm'].resetFields()
-          if (this.dataForm.goodsId) {
+          if (this.dataForm.id) {
             this.$http({
-              url: this.$http.adornUrl(`/generator/goods/info/${this.dataForm.goodsId}`),
+              url: this.$http.adornUrl(`/consume_type/consumetype/info/${this.dataForm.id}`),
               method: 'get',
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 0) {
-                this.dataForm.name = data.goods.name
-                this.dataForm.intro = data.goods.intro
-                this.dataForm.price = data.goods.price
-                this.dataForm.num = data.goods.num
+                this.dataForm.type = data.consumeType.type
+                this.dataForm.name = data.consumeType.name
+                this.dataForm.remark = data.consumeType.remark
               }
             })
           }
@@ -79,14 +71,13 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl(`/generator/goods/${!this.dataForm.goodsId ? 'save' : 'update'}`),
+              url: this.$http.adornUrl(`/consume_type/consumetype/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
-                'goodsId': this.dataForm.goodsId || undefined,
+                'id': this.dataForm.id || undefined,
+                'type': this.dataForm.type,
                 'name': this.dataForm.name,
-                'intro': this.dataForm.intro,
-                'price': this.dataForm.price,
-                'num': this.dataForm.num
+                'remark': this.dataForm.remark
               })
             }).then(({data}) => {
               if (data && data.code === 0) {

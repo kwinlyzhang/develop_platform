@@ -1,17 +1,200 @@
 <template>
-  <div class="mod-home">
-    
+  <div class="mod-home mod-demo-echarts">
+    <el-alert
+      title="提示："
+      type="warning"
+      :closable="false">
+      <div slot-scope="description">
+        <p class="el-alert__description">1. 此Demo只提供ECharts官方使用文档，入门部署和体验功能。具体使用请参考：http://echarts.baidu.com/index.html</p>
+      </div>
+    </el-alert>
+
+    <el-row :gutter="20">
+      <el-col :span="24">
+        <el-card>
+          <div id="J_chartLineBox" class="chart-box"></div>
+        </el-card>
+      </el-col>
+      <el-col :span="12">
+        <el-card>
+          <div id="J_chartPieBox" class="chart-box"></div>
+        </el-card>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
+  import echarts from 'echarts'
   export default {
+    data () {
+      return {
+        chartLine: null,
+        chartPie: null,
+        homeData: {}
+      }
+    },
+    mounted () {
+      this.initHomeData()
+    },
+    activated () {
+      // 由于给echart添加了resize事件, 在组件激活时需要重新resize绘画一次, 否则出现空白bug
+      if (this.chartLine) {
+        this.chartLine.resize()
+      }
+      if (this.chartPie) {
+        this.chartPie.resize()
+      }
+    },
+    methods: {
+      // 初始化数据
+      initHomeData () {
+        this.$http({
+          url: this.$http.adornUrl('/consumption_detail/consumptiondetail/trend'),
+          method: 'get'
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.homeData = data.result
+            console.log(this.homeData)
+            this.initChartLine()
+            this.initChartPie()
+          } else {
+            this.homeData = {}
+          }
+        })
+      },
+      // 折线图
+      initChartLine () {
+        var option = {
+          'title': {
+            'text': '近十天消费趋势图'
+          },
+          'tooltip': {
+            'trigger': 'axis'
+          },
+          'legend': {
+            'data': this.homeData.consumeTypeNames
+          },
+          'grid': {
+            'left': '3%',
+            'right': '4%',
+            'bottom': '3%',
+            'containLabel': true
+          },
+          'toolbox': {
+            'feature': {
+              'saveAsImage': { }
+            }
+          },
+          'xAxis': {
+            'type': 'category',
+            'boundaryGap': false,
+            'data': this.homeData.dates
+          },
+          'yAxis': {
+            'type': 'value'
+          },
+          'series': this.homeData.details
+        }
+        this.chartLine = echarts.init(document.getElementById('J_chartLineBox'))
+        this.chartLine.setOption(option)
+        window.addEventListener('resize', () => {
+          this.chartLine.resize()
+        })
+      },
+      // 饼状图
+      initChartPie () {
+        var option = {
+          backgroundColor: '#2c343c',
+          title: {
+            text: '消费分类统计',
+            left: 'center',
+            top: 20,
+            textStyle: {
+              color: '#ccc'
+            }
+          },
+          tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)'
+          },
+          visualMap: {
+            show: false,
+            min: 80,
+            max: 600,
+            inRange: {
+              colorLightness: [0, 1]
+            }
+          },
+          series: [
+            {
+              name: '访问来源',
+              type: 'pie',
+              radius: '55%',
+              center: ['50%', '50%'],
+              data: this.homeData.datum.sort(function (a, b) { return a.value - b.value }),
+              roseType: 'radius',
+              label: {
+                normal: {
+                  textStyle: {
+                    color: 'rgba(255, 255, 255, 0.3)'
+                  }
+                }
+              },
+              labelLine: {
+                normal: {
+                  lineStyle: {
+                    color: 'rgba(255, 255, 255, 0.3)'
+                  },
+                  smooth: 0.2,
+                  length: 10,
+                  length2: 20
+                }
+              },
+              itemStyle: {
+                normal: {
+                  color: '#c23531',
+                  shadowBlur: 200,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+              },
+              animationType: 'scale',
+              animationEasing: 'elasticOut',
+              animationDelay: function (idx) {
+                return Math.random() * 200
+              }
+            }
+          ]
+        }
+        this.chartPie = echarts.init(document.getElementById('J_chartPieBox'))
+        this.chartPie.setOption(option)
+        window.addEventListener('resize', () => {
+          this.chartPie.resize()
+        })
+      }
+    }
   }
 </script>
 
-<style>
+<style lang="scss">
   .mod-home {
     line-height: 1.5;
+  }
+  .mod-demo-echarts {
+    > .el-alert {
+      margin-bottom: 10px;
+    }
+    > .el-row {
+      margin-top: -10px;
+      margin-bottom: -10px;
+      .el-col {
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
+    }
+    .chart-box {
+      min-height: 400px;
+    }
   }
 </style>
 

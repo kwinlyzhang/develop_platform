@@ -1,7 +1,8 @@
-package com.alyer.modules.business.entity;
+package com.alyer.modules.consumption_detail.entity;
 
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.math.BigDecimal;
 import java.io.Serializable;
@@ -12,7 +13,7 @@ import java.util.Date;
  * 
  * @author zhangshengbo
  * @email 669434283@qq.com
- * @date 2018-10-16 16:54:14
+ * @date 2018-10-30 15:28:06
  */
 @TableName("tb_consumption_detail")
 public class ConsumptionDetailEntity implements Serializable {
@@ -22,7 +23,13 @@ public class ConsumptionDetailEntity implements Serializable {
 	 * ID
 	 */
 	@TableId
-	private Long detailId;
+	private Long id;
+	/**
+	 * 消费日期
+	 */
+
+	@JsonFormat(pattern="yyyy-MM-dd")
+	private Date consumeDate;
 	/**
 	 * 类别
 	 */
@@ -47,19 +54,41 @@ public class ConsumptionDetailEntity implements Serializable {
 	 * 总计
 	 */
 	private BigDecimal total;
+	/**
+	 * 创建者
+	 */
+	private Long createUserId;
+	/**
+	 * 创建时间
+	 */
+	private Date createDate;
+	/**
+	 * 修改时间
+	 */
+	private Date updatedDate;
 
 	/**
 	 * 设置：ID
 	 */
-	public void setDetailId(Long detailId) {
-		this.detailId = detailId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 	/**
 	 * 获取：ID
 	 */
-	public Long getDetailId() {
-		return detailId;
+	public Long getId() {
+		return id;
 	}
+	/**
+	 * 获取：消费日期
+	 */
+	public Date getConsumeDate() { return consumeDate; }
+
+	/**
+	 * 设置：消费日期
+	 */
+	public void setConsumeDate(Date consumeDate) { this.consumeDate = consumeDate; }
+
 	/**
 	 * 设置：类别
 	 */
@@ -131,5 +160,41 @@ public class ConsumptionDetailEntity implements Serializable {
 	 */
 	public BigDecimal getTotal() {
 		return total;
+	}
+	/**
+	 * 设置：创建者
+	 */
+	public void setCreateUserId(Long createUserId) {
+		this.createUserId = createUserId;
+	}
+	/**
+	 * 获取：创建者
+	 */
+	public Long getCreateUserId() {
+		return createUserId;
+	}
+	/**
+	 * 设置：创建时间
+	 */
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+	/**
+	 * 获取：创建时间
+	 */
+	public Date getCreateDate() {
+		return createDate;
+	}
+	/**
+	 * 设置：修改时间
+	 */
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+	/**
+	 * 获取：修改时间
+	 */
+	public Date getUpdatedDate() {
+		return updatedDate;
 	}
 }

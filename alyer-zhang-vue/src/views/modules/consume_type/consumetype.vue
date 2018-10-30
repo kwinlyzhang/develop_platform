@@ -6,8 +6,8 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('generator:goods:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('generator:goods:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button v-if="isAuth('consume_type:consumetype:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('consume_type:consumetype:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -23,34 +23,28 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="goodsId"
+        prop="id"
         header-align="center"
         align="center"
         label="ID">
       </el-table-column>
       <el-table-column
+        prop="type"
+        header-align="center"
+        align="center"
+        label="类型">
+      </el-table-column>
+      <el-table-column
         prop="name"
         header-align="center"
         align="center"
-        label="商品名">
+        label="类型名称">
       </el-table-column>
       <el-table-column
-        prop="intro"
+        prop="remark"
         header-align="center"
         align="center"
-        label="介绍">
-      </el-table-column>
-      <el-table-column
-        prop="price"
-        header-align="center"
-        align="center"
-        label="价格">
-      </el-table-column>
-      <el-table-column
-        prop="num"
-        header-align="center"
-        align="center"
-        label="数量">
+        label="备注">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -59,8 +53,8 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.goodsId)">修改</el-button>
-          <el-button type="text" size="small" @click="deleteHandle(scope.row.goodsId)">删除</el-button>
+          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+          <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -79,7 +73,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './goods-add-or-update'
+  import AddOrUpdate from './consumetype-add-or-update'
   export default {
     data () {
       return {
@@ -106,7 +100,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/generator/goods/list'),
+          url: this.$http.adornUrl('/consume_type/consumetype/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -149,7 +143,7 @@
       // 删除
       deleteHandle (id) {
         var ids = id ? [id] : this.dataListSelections.map(item => {
-          return item.goodsId
+          return item.id
         })
         this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
           confirmButtonText: '确定',
@@ -157,7 +151,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/generator/goods/delete'),
+            url: this.$http.adornUrl('/consume_type/consumetype/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {
